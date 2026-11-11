@@ -1,0 +1,794 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-50">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quill & Ivy - Phase 1 Research Workbench</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .tab-active { border-bottom: 2px solid #2563eb; color: #2563eb; font-weight: 600; }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: #f1f5f9; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="h-full flex flex-col text-slate-800 antialiased selection:bg-blue-100 selection:text-blue-900">
+
+    <!-- Header / Brand bar -->
+    <header class="bg-white border-b border-slate-200 shrink-0">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-lg bg-emerald-700 flex items-center justify-center text-white font-serif font-bold text-xl shadow-sm">
+                    Q&I
+                </div>
+                <div>
+                    <h1 class="text-base font-bold text-slate-900 leading-tight">Quill & Ivy Market Research Workbench</h1>
+                    <p class="text-xs text-slate-500">Phase 1: Build the Evidence Base (LC1-P Project)</p>
+                </div>
+            </div>
+            <div class="flex items-center space-x-3 text-xs">
+                <span id="save-indicator" class="hidden sm:inline-flex items-center text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">
+                    <i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600 mr-1.5"></i> Auto-saved
+                </span>
+                <button onclick="resetWorkbench()" class="text-slate-500 hover:text-red-600 px-2 py-1 transition-colors" title="Reset all inputs">
+                    Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="bg-white border-b border-slate-200 shrink-0 sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-8 overflow-x-auto no-scrollbar">
+            <button onclick="switchTab('tab-step1')" id="btn-tab-step1" class="py-3.5 px-1 inline-flex items-center text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap tab-active">
+                <span class="w-5 h-5 rounded-full bg-blue-100 text-blue-700 text-xs flex items-center justify-center mr-2 font-bold">1</span>
+                Step 1: Decision Restatement
+            </button>
+            <button onclick="switchTab('tab-step2')" id="btn-tab-step2" class="py-3.5 px-1 inline-flex items-center text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap">
+                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 text-xs flex items-center justify-center mr-2 font-bold" id="badge-tab-step2">2</span>
+                Step 2: Source Evaluation (6)
+            </button>
+            <button onclick="switchTab('tab-step3')" id="btn-tab-step3" class="py-3.5 px-1 inline-flex items-center text-sm font-medium border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 whitespace-nowrap">
+                <span class="w-5 h-5 rounded-full bg-slate-100 text-slate-600 text-xs flex items-center justify-center mr-2 font-bold" id="badge-tab-step3">3</span>
+                Step 3: Customer Comment Coding (25)
+            </button>
+            <button onclick="switchTab('tab-summary')" id="btn-tab-summary" class="py-3.5 px-1 inline-flex items-center text-sm font-medium border-b-2 border-transparent text-emerald-600 hover:text-emerald-700 whitespace-nowrap ml-auto font-semibold">
+                <i data-lucide="file-text" class="w-4 h-4 mr-1.5"></i>
+                Summary & Export
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 overflow-y-auto custom-scrollbar p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
+        
+        <!-- ================= TAB 1: STEP 1 ================= -->
+        <section id="tab-step1" class="space-y-6">
+            <div class="bg-blue-50/50 border border-blue-200/80 rounded-xl p-4 sm:p-5 flex items-start space-x-3">
+                <i data-lucide="info" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
+                <div class="text-sm text-blue-900 leading-relaxed">
+                    <strong class="font-semibold">Step 1 Goal:</strong> Restate the client request into a clear business decision statement. Remember: a strong restatement describes a <em>choice</em>, not a generic topic (e.g., "Whether to convert store space..." vs "Customer workshop feedback").
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Left: Input Form -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                        <label for="decision-sentence" class="block text-sm font-semibold text-slate-900">
+                            1. Decision Restatement Sentence <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-xs text-slate-500">Write one focused sentence stating the exact strategic choice the Quill & Ivy owner must make.</p>
+                        <textarea id="decision-sentence" rows="3" oninput="saveData()" 
+                            placeholder="e.g., Quill and Ivy must decide within eight weeks whether to convert store space into paid workshop areas for calligraphy, journaling, and card-making..."
+                            class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
+
+                        <div class="pt-2">
+                            <button onclick="validateStep1()" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-semibold inline-flex items-center shadow-sm transition">
+                                <i data-lucide="sparkles" class="w-3.5 h-3.5 mr-1.5"></i> Run Formative Alignment Check
+                            </button>
+                        </div>
+
+                        <!-- Feedback Box -->
+                        <div id="step1-feedback" class="hidden rounded-lg p-4 text-xs leading-relaxed space-y-2"></div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                        <div class="flex items-center justify-between">
+                            <label class="block text-sm font-semibold text-slate-900">
+                                2. Decision Deadline & Resource Constraints
+                            </label>
+                            <span class="text-xs bg-slate-100 text-slate-600 px-2.5 py-0.5 rounded-full font-medium">Scenario Fixed</span>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="font-semibold text-slate-700 block mb-1">Time Horizon</span>
+                                <span class="text-slate-600">8 Weeks total until owner decision</span>
+                            </div>
+                            <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <span class="font-semibold text-slate-700 block mb-1">Primary Research Budget</span>
+                                <span class="text-slate-600">1 Online survey wave + Up to 6 interviews</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                        <label for="unclear-points" class="block text-sm font-semibold text-slate-900">
+                            3. Critical Gaps & Unanswered Questions
+                        </label>
+                        <p class="text-xs text-slate-500">What critical details does the stakeholder request leave unclear? (These will become your research objectives).</p>
+                        <textarea id="unclear-points" rows="4" oninput="saveData()" 
+                            placeholder="Bullet 2-3 key unknowns (e.g., Willingness to pay range, preferred days/times, interest level by workshop format)..."
+                            class="w-full rounded-lg border border-slate-300 p-3 text-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition"></textarea>
+                    </div>
+                </div>
+
+                <!-- Right: Reference & Scenario Context -->
+                <div class="space-y-6">
+                    <div class="bg-slate-900 text-slate-100 rounded-xl p-5 shadow-md space-y-3">
+                        <div class="flex items-center space-x-2 text-amber-400">
+                            <i data-lucide="briefcase" class="w-4 h-4"></i>
+                            <h3 class="text-sm font-semibold">Client Scenario Context</h3>
+                        </div>
+                        <p class="text-xs text-slate-300 leading-relaxed">
+                            <strong>Quill and Ivy Stationery</strong> sells premium paper goods online and via 2 boutique retail stores. The owner is weighing a physical store fit-out for workshops (calligraphy, journaling, card-making).
+                        </p>
+                        <div class="border-t border-slate-800 pt-3 text-xs text-slate-400 space-y-1.5">
+                            <div class="flex justify-between">
+                                <span>Opted-in Email List:</span>
+                                <strong class="text-slate-200">~4,000 customers</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Internal Data:</span>
+                                <strong class="text-slate-200">Store Sales Available</strong>
+                            </div>
+                            <div class="flex justify-between">
+                                <span>Stakes:</span>
+                                <strong class="text-red-400">High fit-out cost if empty</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-xs text-amber-900 space-y-2">
+                        <div class="flex items-center space-x-1.5 font-semibold text-amber-800">
+                            <i data-lucide="lightbulb" class="w-4 h-4"></i>
+                            <span>Analyst Pro-Tip</span>
+                        </div>
+                        <p>Avoid stating topics like <em>"We need to study customer opinions."</em> Instead, focus on the business choice: <em>"Decide whether to invest in store space conversion based on customer attendance potential and price point tolerances."</em></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: STEP 2 ================= -->
+        <section id="tab-step2" class="space-y-6 hidden">
+            <div class="bg-blue-50/50 border border-blue-200/80 rounded-xl p-4 sm:p-5 flex items-start space-x-3">
+                <i data-lucide="filter" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
+                <div class="text-sm text-blue-900 leading-relaxed">
+                    <strong class="font-semibold">Step 2 Goal:</strong> Rate each of the 6 simulated secondary sources on Author, Date, Methodology, and Bias. Extract usable evidence points using explicit Source IDs (e.g., <code class="bg-blue-100 px-1 py-0.5 rounded text-blue-800 font-mono">[SRC-01]</code>).
+                </div>
+            </div>
+
+            <!-- Source Grid -->
+            <div id="sources-container" class="space-y-6">
+                <!-- Sources rendered via JS -->
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: STEP 3 ================= -->
+        <section id="tab-step3" class="space-y-6 hidden">
+            <div class="bg-blue-50/50 border border-blue-200/80 rounded-xl p-4 sm:p-5 flex items-start justify-between">
+                <div class="flex items-start space-x-3">
+                    <i data-lucide="tags" class="w-5 h-5 text-blue-600 shrink-0 mt-0.5"></i>
+                    <div class="text-sm text-blue-900 leading-relaxed">
+                        <strong class="font-semibold">Step 3 Goal:</strong> Code the 25 customer feedback responses into 3–4 distinct themes. Assign each comment to a theme and select <strong>one verbatim quote</strong> per theme to support your brief.
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                <!-- Left Column: Theme Summary Cards (4 cols) -->
+                <div class="lg:col-span-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-bold text-slate-900">Theme Dashboard</h3>
+                        <span class="text-xs text-slate-500" id="coded-progress">0 of 25 Coded</span>
+                    </div>
+
+                    <div id="theme-summary-list" class="space-y-3">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive Comment Feed (7 cols) -->
+                <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-900">Customer Comments (25 Open-Text Responses)</h3>
+                            <p class="text-xs text-slate-500">Select a theme for each response to code it.</p>
+                        </div>
+                        <select id="filter-theme" onchange="renderComments()" class="text-xs border border-slate-300 rounded-md p-1.5 focus:ring-blue-500">
+                            <option value="ALL">Show All Comments</option>
+                            <option value="UNCODED">Uncoded Only</option>
+                            <option value="T1">Hands-on Workshop Interest</option>
+                            <option value="T2">Time & Scheduling Constraints</option>
+                            <option value="T3">Price Sensitivity & Value</option>
+                            <option value="T4">Beginner & Skill Level Concerns</option>
+                        </select>
+                    </div>
+
+                    <div id="comments-container" class="space-y-3 max-h-[600px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB: SUMMARY & EXPORT ================= -->
+        <section id="tab-summary" class="space-y-6 hidden">
+            <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-5 flex items-start justify-between">
+                <div class="flex items-start space-x-3">
+                    <i data-lucide="check-circle" class="w-5 h-5 text-emerald-600 shrink-0 mt-0.5"></i>
+                    <div>
+                        <h3 class="text-sm font-bold text-emerald-900">Phase 1 Evidence Base Complete</h3>
+                        <p class="text-xs text-emerald-700 mt-0.5">Use this generated summary as the direct foundation for your <strong>Deliverable 2 (Background Evidence Summary, 250–400 words)</strong>.</p>
+                    </div>
+                </div>
+                <button onclick="copySummaryText()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-semibold inline-flex items-center shadow-sm transition">
+                    <i data-lucide="copy" class="w-3.5 h-3.5 mr-1.5"></i> Copy to Clipboard
+                </button>
+            </div>
+
+            <div class="bg-white border border-slate-200 rounded-xl p-6 shadow-sm space-y-4">
+                <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Formatted Submission Draft</span>
+                    <span id="word-count-badge" class="text-xs bg-slate-100 text-slate-600 px-2.5 py-1 rounded-full font-medium">0 words</span>
+                </div>
+
+                <div id="summary-preview" class="font-mono text-xs leading-relaxed text-slate-800 bg-slate-50 p-4 rounded-lg border border-slate-200 whitespace-pre-wrap selection:bg-emerald-200">
+                    <!-- Live preview compiled here -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JavaScript Logic -->
+    <script>
+        // Data Structures & Default State
+        const defaultSources = [
+            {
+                id: "SRC-01",
+                name: "National Adult Education & Hobby Spending Table",
+                publisher: "U.S. Census / Bureau of Labor Statistics",
+                type: "Gov/Census Data",
+                defaultRating: "Strong",
+                authorEval: "Government statistical agency with high domain authority.",
+                dateEval: "Current year data.",
+                methodEval: "Representative national sampling with disclosed methodology.",
+                biasEval: "Low/No commercial interest.",
+                evidence: "National adult crafting course spending grew 4.2% YoY; median craft workshop fee is $35–$50 per session.",
+                userRating: "Strong",
+                notes: ""
+            },
+            {
+                id: "SRC-02",
+                name: "Craft Workshop Participation Survey",
+                publisher: "Craft & Hobby Trade Association",
+                type: "Trade Association Survey",
+                defaultRating: "Strong",
+                authorEval: "Industry trade group specializing in retail craft market intelligence.",
+                dateEval: "Published 8 months ago.",
+                methodEval: "Survey of N=1,200 active crafters; clear methodology.",
+                biasEval: "Minor promotion of industry growth, but data is transparent.",
+                evidence: "68% of boutique shoppers express interest in hands-on creative workshops; weekend morning sessions show highest demand.",
+                userRating: "Strong",
+                notes: ""
+            },
+            {
+                id: "SRC-03",
+                name: "Experiential Retail Trends Report",
+                publisher: "Retail Strategy Quarterly (Industry Publication)",
+                type: "Industry Publication",
+                defaultRating: "Moderate",
+                authorEval: "Retail industry journalists and analysts.",
+                dateEval: "14 months old.",
+                methodEval: "Qualitative case studies of 15 boutique retailers.",
+                biasEval: "Leans positively toward experiential retail concepts.",
+                evidence: "In-store workshops increase overall store foot-traffic by 22% and boost same-day merchandise spending by 15%.",
+                userRating: "Moderate",
+                notes: ""
+            },
+            {
+                id: "SRC-04",
+                name: "Studio Workshop Promotional Page",
+                publisher: "Artisan Craft Studio (Local Competitor)",
+                type: "Competitor Marketing Material",
+                defaultRating: "Weak",
+                authorEval: "Direct local competitor selling competing workshops.",
+                dateEval: "Active web page.",
+                methodEval: "No methodology; promotional claims designed to convert sales.",
+                biasEval: "HIGH BIAS: Commercial incentive to project high popularity.",
+                evidence: "Competitor charges $65 per 2-hour calligraphy workshop; claims sessions sell out weeks in advance.",
+                userRating: "Weak",
+                notes: ""
+            },
+            {
+                id: "SRC-05",
+                name: "Undated DIY Crafting Blog Post",
+                publisher: "CraftyCorner Blog (Independent Blogger)",
+                type: "Personal Blog",
+                defaultRating: "Weak",
+                authorEval: "Individual hobby blogger without formal research credentials.",
+                dateEval: "UNDATED (Unknown age of data).",
+                methodEval: "Anecdotal personal opinion.",
+                biasEval: "Personal subjective view.",
+                evidence: "Blogger asserts customers prefer evening weekday journaling classes over weekends.",
+                userRating: "Weak",
+                notes: ""
+            },
+            {
+                id: "SRC-06",
+                name: "National Retail Trends Report (6 Years Old)",
+                publisher: "Retail Insights Group",
+                type: "Outdated Market Report",
+                defaultRating: "Weak",
+                authorEval: "Reputable research firm.",
+                dateEval: "6 YEARS OLD (Outdated pre-pandemic retail data).",
+                methodEval: "Rigorous quantitative survey at time of publication.",
+                biasEval: "Low bias, but low currency.",
+                evidence: "Stationery stores averaged 12% revenue from events in 2018.",
+                userRating: "Weak",
+                notes: ""
+            }
+        ];
+
+        const defaultComments = [
+            { id: 1, text: "I would love a hands-on calligraphy class! I've tried learning from books but really need in-person guidance on pen stroke techniques.", theme: "T1", quoteSelected: true },
+            { id: 2, text: "Weekends are super packed for me with kids' sports. If you offered weekday evening journaling workshops around 6:30 PM, I'd definitely attend.", theme: "T2", quoteSelected: false },
+            { id: 3, text: "$60 or $70 feels way too steep for a 2-hour session. I'd consider it if it was under $40 including all paper and ink supplies.", theme: "T3", quoteSelected: false },
+            { id: 4, text: "I've never done card-making before and feel intimidated. Would these workshops be friendly for absolute beginners with zero artistic background?", theme: "T4", quoteSelected: true },
+            { id: 5, text: "Having an expert instructor walk us through bullet journaling layouts would save me so much trial and error!", theme: "T1", quoteSelected: false },
+            { id: 6, text: "Saturday mornings at 10 AM would be perfect for me to attend with a friend before grabbing lunch nearby.", theme: "T2", quoteSelected: true },
+            { id: 7, text: "Pricing is key for me. If workshops cost more than $45, I'll just stick to free YouTube video tutorials at home.", theme: "T3", quoteSelected: true },
+            { id: 8, text: "I'm worried I'll fall behind the rest of the class if I don't already have good handwriting.", theme: "T4", quoteSelected: false },
+            { id: 9, text: "A structured watercolor card-making workshop sounds like such a fun creative outlet after work!", theme: "T1", quoteSelected: false },
+            { id: 10, text: "My work schedule is unpredictable. Flexible drop-in sessions or easy rescheduling would make a huge difference.", theme: "T2", quoteSelected: false },
+            { id: 11, text: "If the price includes a high-quality starter kit (pens, notebook) to take home, then $50–$60 feels like a fair value.", theme: "T3", quoteSelected: false },
+            { id: 12, text: "Are materials provided, or do we have to purchase supplies separately in the store before class starts?", theme: "T4", quoteSelected: false },
+            { id: 13, text: "I've been shopping at Quill & Ivy for years—learning calligraphy directly from your staff in-store would be amazing.", theme: "T1", quoteSelected: false },
+            { id: 14, text: "I work 9 to 5, so daytime weekday classes are completely out for me.", theme: "T2", quoteSelected: false },
+            { id: 15, text: "I'd want to know exact pricing upfront before signing up—hidden material fees would really annoy me.", theme: "T3", quoteSelected: false },
+            { id: 16, text: "I consider myself a complete novice, so step-by-step beginner instruction is a must.", theme: "T4", quoteSelected: false },
+            { id: 17, text: "Modern brush lettering and holiday card-making workshops would sell out so fast!", theme: "T1", quoteSelected: false },
+            { id: 18, text: "Sunday afternoons would be ideal for a relaxing 2-hour journaling session.", theme: "T2", quoteSelected: false },
+            { id: 19, text: "As long as it's priced competitively compared to local art community centers ($35–$45 range), I'll sign up.", theme: "T3", quoteSelected: false },
+            { id: 20, text: "I'd be embarrassed if everyone else in the calligraphy class is already advanced.", theme: "T4", quoteSelected: false },
+            { id: 21, text: "Interactive live crafting with other stationery enthusiasts is exactly what the downtown store needs.", theme: "T1", quoteSelected: false },
+            { id: 22, text: "Between work and family, finding a free 3-hour block is tough—keep workshops to 90 minutes max.", theme: "T2", quoteSelected: false },
+            { id: 23, text: "$50 is my absolute upper limit for a workshop fee.", theme: "T3", quoteSelected: false },
+            { id: 24, text: "Will there be introductory level classes for people who haven't picked up a calligraphy pen since grade school?", theme: "T4", quoteSelected: false },
+            { id: 25, text: "I really hope you bring back journaling circles—it would build such a great local store community.", theme: "T1", quoteSelected: false }
+        ];
+
+        const themesConfig = {
+            "T1": { name: "Hands-on Workshop Interest", color: "emerald" },
+            "T2": { name: "Time & Scheduling Constraints", color: "amber" },
+            "T3": { name: "Price Sensitivity & Value", color: "blue" },
+            "T4": { name: "Beginner & Skill Level Concerns", color: "purple" }
+        };
+
+        // App State Variables
+        let state = {
+            decisionSentence: "",
+            unclearPoints: "",
+            sources: defaultSources,
+            comments: defaultComments
+        };
+
+        // Load & Save State
+        function initApp() {
+            const saved = localStorage.getItem('quill_ivy_phase1_data');
+            if (saved) {
+                try {
+                    state = JSON.parse(saved);
+                } catch(e) {
+                    console.error("Failed to parse saved state", e);
+                }
+            }
+
+            // Restore inputs
+            document.getElementById('decision-sentence').value = state.decisionSentence || "";
+            document.getElementById('unclear-points').value = state.unclearPoints || "";
+
+            renderSources();
+            renderThemeDashboard();
+            renderComments();
+            compileSummary();
+            lucide.createIcons();
+        }
+
+        function saveData() {
+            state.decisionSentence = document.getElementById('decision-sentence').value;
+            state.unclearPoints = document.getElementById('unclear-points').value;
+            localStorage.setItem('quill_ivy_phase1_data', JSON.stringify(state));
+
+            // Visual feedback
+            const indicator = document.getElementById('save-indicator');
+            indicator.classList.remove('hidden');
+            setTimeout(() => {
+                indicator.classList.add('hidden');
+            }, 1500);
+
+            compileSummary();
+        }
+
+        function resetWorkbench() {
+            if (confirm("Are you sure you want to reset all your work? This cannot be undone.")) {
+                localStorage.removeItem('quill_ivy_phase1_data');
+                state = {
+                    decisionSentence: "",
+                    unclearPoints: "",
+                    sources: JSON.parse(JSON.stringify(defaultSources)),
+                    comments: JSON.parse(JSON.stringify(defaultComments))
+                };
+                initApp();
+            }
+        }
+
+        // Tab Navigation
+        function switchTab(tabId) {
+            ['tab-step1', 'tab-step2', 'tab-step3', 'tab-summary'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                const btn = document.getElementById('btn-' + id);
+                if (btn) {
+                    btn.classList.remove('tab-active');
+                    btn.querySelector('span')?.classList.replace('bg-blue-100', 'bg-slate-100');
+                    btn.querySelector('span')?.classList.replace('text-blue-700', 'text-slate-600');
+                }
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            const activeBtn = document.getElementById('btn-' + tabId);
+            if (activeBtn) {
+                activeBtn.classList.add('tab-active');
+                activeBtn.querySelector('span')?.classList.replace('bg-slate-100', 'bg-blue-100');
+                activeBtn.querySelector('span')?.classList.replace('text-slate-600', 'text-blue-700');
+            }
+
+            if (tabId === 'tab-summary') {
+                compileSummary();
+            }
+        }
+
+        // Step 1 Validation Logic
+        function validateStep1() {
+            const sentence = document.getElementById('decision-sentence').value.trim();
+            const feedbackBox = document.getElementById('step1-feedback');
+            feedbackBox.classList.remove('hidden', 'bg-red-50', 'text-red-900', 'bg-emerald-50', 'text-emerald-900', 'bg-amber-50', 'text-amber-900');
+
+            if (sentence.length < 20) {
+                feedbackBox.classList.add('bg-amber-50', 'text-amber-900');
+                feedbackBox.innerHTML = `<div class="flex items-center font-bold text-amber-800"><i data-lucide="alert-triangle" class="w-4 h-4 mr-1.5"></i> Statement Too Short</div>Please write a full, specific sentence detailing the decision facing Quill and Ivy.`;
+            } else {
+                const lower = sentence.toLowerCase();
+                const hasChoice = lower.includes('whether') || lower.includes('decide') || lower.includes('convert') || lower.includes('if');
+                const hasDeadline = lower.includes('eight') || lower.includes('8') || lower.includes('week');
+
+                if (hasChoice && hasDeadline) {
+                    feedbackBox.classList.add('bg-emerald-50', 'text-emerald-900');
+                    feedbackBox.innerHTML = `<div class="flex items-center font-bold text-emerald-800"><i data-lucide="check-circle" class="w-4 h-4 mr-1.5"></i> Strong Alignment!</div>Your restatement frames a clear choice ("whether...") and explicitly acknowledges the 8-week decision constraint.`;
+                } else {
+                    feedbackBox.classList.add('bg-amber-50', 'text-amber-900');
+                    feedbackBox.innerHTML = `<div class="flex items-center font-bold text-amber-800"><i data-lucide="alert-circle" class="w-4 h-4 mr-1.5"></i> Refinement Suggested</div>Ensure your sentence explicitly states a <strong>choice</strong> (e.g., using "whether to...") and mentions the <strong>8-week timeframe</strong> constraint.`;
+                }
+            }
+            lucide.createIcons();
+        }
+
+        // Step 2 Render & Event Handlers
+        function renderSources() {
+            const container = document.getElementById('sources-container');
+            container.innerHTML = state.sources.map((src, index) => {
+                const isWeakCompetitorWarn = src.id === 'SRC-04' && src.userRating === 'Strong';
+                const isOutdatedWarn = src.id === 'SRC-06' && src.userRating === 'Strong';
+
+                return `
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center space-x-2.5">
+                            <span class="font-mono bg-slate-100 text-slate-800 px-2 py-0.5 rounded text-xs font-bold border border-slate-200">${src.id}</span>
+                            <h3 class="text-sm font-bold text-slate-900">${src.name}</h3>
+                        </div>
+                        <span class="text-xs text-slate-500 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">${src.publisher} (${src.type})</span>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 text-xs">
+                        <div class="bg-slate-50 p-2.5 rounded-lg">
+                            <span class="font-semibold text-slate-700 block mb-0.5">Author/Publisher</span>
+                            <span class="text-slate-600">${src.authorEval}</span>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg">
+                            <span class="font-semibold text-slate-700 block mb-0.5">Date / Currency</span>
+                            <span class="text-slate-600">${src.dateEval}</span>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg">
+                            <span class="font-semibold text-slate-700 block mb-0.5">Methodology</span>
+                            <span class="text-slate-600">${src.methodEval}</span>
+                        </div>
+                        <div class="bg-slate-50 p-2.5 rounded-lg">
+                            <span class="font-semibold text-slate-700 block mb-0.5">Potential Bias</span>
+                            <span class="text-slate-600">${src.biasEval}</span>
+                        </div>
+                    </div>
+
+                    <!-- Credibility Rating Selector -->
+                    <div class="pt-2 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-t border-slate-100">
+                        <div class="flex items-center space-x-3">
+                            <label class="text-xs font-semibold text-slate-700">Credibility Rating:</label>
+                            <div class="inline-flex rounded-md shadow-sm">
+                                <button onclick="updateSourceRating('${src.id}', 'Strong')" 
+                                    class="px-3 py-1 text-xs font-medium rounded-l-md border ${src.userRating === 'Strong' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'}">
+                                    Strong
+                                </button>
+                                <button onclick="updateSourceRating('${src.id}', 'Moderate')" 
+                                    class="px-3 py-1 text-xs font-medium border-t border-b ${src.userRating === 'Moderate' ? 'bg-amber-500 text-white border-amber-500' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'}">
+                                    Moderate
+                                </button>
+                                <button onclick="updateSourceRating('${src.id}', 'Weak')" 
+                                    class="px-3 py-1 text-xs font-medium rounded-r-md border ${src.userRating === 'Weak' ? 'bg-red-600 text-white border-red-600' : 'bg-white text-slate-700 border-slate-300 hover:bg-slate-50'}">
+                                    Weak
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex-1 max-w-xl">
+                            <input type="text" value="${src.notes || ''}" oninput="updateSourceNotes('${src.id}', this.value)"
+                                placeholder="One-line justification reason for rating..."
+                                class="w-full text-xs rounded-md border border-slate-300 p-2 focus:ring-1 focus:ring-blue-500 outline-none">
+                        </div>
+                    </div>
+
+                    <!-- Pedagogical Warning Feedback -->
+                    ${isWeakCompetitorWarn ? `
+                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-center space-x-2">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                            <span><strong>Pedagogical Hint:</strong> Competitor promotional pages (SRC-04) carry strong commercial bias and unverified claims. Analysts typically rate these as <strong>Weak</strong> (though specific price benchmarks remain usable with caveats).</span>
+                        </div>
+                    ` : ''}
+                    ${isOutdatedWarn ? `
+                        <div class="p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-900 flex items-center space-x-2">
+                            <i data-lucide="alert-triangle" class="w-4 h-4 text-amber-600 shrink-0"></i>
+                            <span><strong>Pedagogical Hint:</strong> SRC-06 is 6 years old. In retail market research, data this old is usually rated <strong>Weak</strong> due to lack of currency.</span>
+                        </div>
+                    ` : ''}
+
+                    <div class="p-3 bg-blue-50/40 rounded-lg border border-blue-100 text-xs">
+                        <strong class="text-blue-900 block mb-0.5">Extracted Key Usable Evidence:</strong>
+                        <span class="text-slate-700 font-mono">"[${src.id}] ${src.evidence}"</span>
+                    </div>
+                </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function updateSourceRating(id, rating) {
+            const src = state.sources.find(s => s.id === id);
+            if (src) {
+                src.userRating = rating;
+                saveData();
+                renderSources();
+            }
+        }
+
+        function updateSourceNotes(id, text) {
+            const src = state.sources.find(s => s.id === id);
+            if (src) {
+                src.notes = text;
+                saveData();
+            }
+        }
+
+        // Step 3 Render & Event Handlers
+        function renderThemeDashboard() {
+            const counts = { T1: 0, T2: 0, T3: 0, T4: 0, UNCODED: 0 };
+            state.comments.forEach(c => {
+                if (c.theme && counts[c.theme] !== undefined) {
+                    counts[c.theme]++;
+                } else {
+                    counts.UNCODED++;
+                }
+            });
+
+            const totalCoded = 25 - counts.UNCODED;
+            document.getElementById('coded-progress').innerText = `${totalCoded} of 25 Coded`;
+
+            const summaryList = document.getElementById('theme-summary-list');
+            summaryList.innerHTML = Object.keys(themesConfig).map(key => {
+                const theme = themesConfig[key];
+                const count = counts[key];
+                const selectedQuote = state.comments.find(c => c.theme === key && c.quoteSelected);
+
+                return `
+                <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold text-slate-800">${theme.name}</span>
+                        <span class="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700">${count} comments</span>
+                    </div>
+                    
+                    <div class="text-xs text-slate-500">
+                        ${selectedQuote ? `
+                            <div class="p-2 bg-emerald-50 rounded border border-emerald-200 text-emerald-900 space-y-1">
+                                <span class="font-semibold text-[10px] uppercase text-emerald-700 block">Supporting Quote Selected:</span>
+                                <p class="italic">"${selectedQuote.text}"</p>
+                            </div>
+                        ` : `
+                            <span class="text-amber-600 text-[11px] flex items-center">
+                                <i data-lucide="alert-circle" class="w-3 h-3 mr-1"></i> No verbatim quote selected yet.
+                            </span>
+                        `}
+                    </div>
+                </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function renderComments() {
+            const filter = document.getElementById('filter-theme').value;
+            const container = document.getElementById('comments-container');
+
+            const filtered = state.comments.filter(c => {
+                if (filter === 'ALL') return true;
+                if (filter === 'UNCODED') return !c.theme;
+                return c.theme === filter;
+            });
+
+            container.innerHTML = filtered.map(c => {
+                return `
+                <div class="p-3.5 bg-slate-50 hover:bg-white rounded-lg border border-slate-200 transition space-y-2 text-xs">
+                    <div class="flex items-start justify-between gap-2">
+                        <span class="font-mono text-[10px] text-slate-400 font-bold">#${c.id}</span>
+                        <p class="text-slate-800 flex-1 leading-relaxed">"${c.text}"</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-200/60">
+                        <div class="flex items-center space-x-1.5">
+                            <label class="text-[11px] font-semibold text-slate-500">Theme:</label>
+                            <select onchange="assignCommentTheme(${c.id}, this.value)" class="text-xs border border-slate-300 rounded px-2 py-1 bg-white focus:ring-blue-500">
+                                <option value="">-- Select Theme --</option>
+                                <option value="T1" ${c.theme === 'T1' ? 'selected' : ''}>Hands-on Workshop Interest</option>
+                                <option value="T2" ${c.theme === 'T2' ? 'selected' : ''}>Time & Scheduling Constraints</option>
+                                <option value="T3" ${c.theme === 'T3' ? 'selected' : ''}>Price Sensitivity & Value</option>
+                                <option value="T4" ${c.theme === 'T4' ? 'selected' : ''}>Beginner & Skill Level Concerns</option>
+                            </select>
+                        </div>
+
+                        ${c.theme ? `
+                            <button onclick="toggleQuoteSelect(${c.id})" 
+                                class="px-2.5 py-1 text-[11px] rounded font-medium transition inline-flex items-center ${c.quoteSelected ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-700 hover:bg-slate-300'}">
+                                <i data-lucide="${c.quoteSelected ? 'check' : 'quote'}" class="w-3 h-3 mr-1"></i>
+                                ${c.quoteSelected ? 'Selected Quote' : 'Use as Supporting Quote'}
+                            </button>
+                        ` : ''}
+                    </div>
+                </div>
+                `;
+            }).join('');
+            lucide.createIcons();
+        }
+
+        function assignCommentTheme(commentId, themeKey) {
+            const comment = state.comments.find(c => c.id === commentId);
+            if (comment) {
+                // If losing theme, remove quote selection
+                if (!themeKey) comment.quoteSelected = false;
+                
+                comment.theme = themeKey;
+                
+                // Auto select quote if it's the first quote for that theme
+                if (themeKey && !state.comments.some(c => c.theme === themeKey && c.quoteSelected)) {
+                    comment.quoteSelected = true;
+                }
+
+                saveData();
+                renderThemeDashboard();
+                renderComments();
+            }
+        }
+
+        function toggleQuoteSelect(commentId) {
+            const comment = state.comments.find(c => c.id === commentId);
+            if (!comment || !comment.theme) return;
+
+            // Unselect previous quotes in the same theme bucket
+            state.comments.forEach(c => {
+                if (c.theme === comment.theme) {
+                    c.quoteSelected = false;
+                }
+            });
+
+            comment.quoteSelected = true;
+            saveData();
+            renderThemeDashboard();
+            renderComments();
+        }
+
+        // Summary Compilation
+        function compileSummary() {
+            const decisionSentence = state.decisionSentence || "[Decision Restatement Sentence Pending]";
+            
+            // Source Summaries
+            const sourceLines = state.sources.map(s => {
+                const reason = s.notes ? s.notes : `${s.authorEval} (${s.biasEval})`;
+                return `• ${s.id} (${s.name}): Rated ${s.userRating.toUpperCase()}. Reason: ${reason}`;
+            }).join('\n');
+
+            const evidenceLines = state.sources.map(s => `• [${s.id}] ${s.evidence}`).join('\n');
+
+            // Theme Summaries
+            const counts = { T1: 0, T2: 0, T3: 0, T4: 0 };
+            state.comments.forEach(c => { if (c.theme) counts[c.theme]++; });
+
+            const themeLines = Object.keys(themesConfig).map(key => {
+                const t = themesConfig[key];
+                const count = counts[key];
+                const q = state.comments.find(c => c.theme === key && c.quoteSelected);
+                const quoteText = q ? `"${q.text}"` : "[No supporting quote selected]";
+                return `• Theme: ${t.name} (~${count} comments). Supporting Quote: ${quoteText}`;
+            }).join('\n');
+
+            const text = `BACKGROUND EVIDENCE SUMMARY (QUILL AND IVY STATIONERY)
+----------------------------------------------------------------------
+1. DECISION RESTATEMENT & CONSTRAINTS
+${decisionSentence}
+
+2. SECONDARY SOURCE CREDIBILITY RATINGS
+${sourceLines}
+
+3. KEY USABLE EVIDENCE
+${evidenceLines}
+
+4. CUSTOMER COMMENT THEMES (25 RESPONSES)
+${themeLines}
+
+5. IMPACT ON RESEARCH OBJECTIVES
+Findings directly shape objectives by establishing the need for a sequenced design: (1) Qualitative exploration of time constraints and beginner anxieties, followed by (2) Quantitative survey measuring willingness to pay ($35-$50 range) across opted-in email audience.`;
+
+            document.getElementById('summary-preview').innerText = text;
+
+            // Word Count
+            const words = text.trim().split(/\s+/).length;
+            document.getElementById('word-count-badge').innerText = `${words} words`;
+        }
+
+        function copySummaryText() {
+            const text = document.getElementById('summary-preview').innerText;
+            
+            // Fallback executive command for iframe safety
+            const textArea = document.createElement("textarea");
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                alert("Phase 1 Evidence Summary copied to clipboard!");
+            } catch (err) {
+                alert("Copying failed. Please select text manually.");
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Global Initialization
+        window.onload = function() {
+            initApp();
+        };
+    </script>
+</body>
+</html>
